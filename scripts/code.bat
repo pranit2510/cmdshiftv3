@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-title VSCode Dev
+title CmdShift Dev
 
 pushd %~dp0\..
 

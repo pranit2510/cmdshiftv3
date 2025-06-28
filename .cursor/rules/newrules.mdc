@@ -1,0 +1,350 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# .cursorrules - CmdShift Strict Development Rules
+
+You are working on CmdShift, a VS Code fork. You must follow these rules EXACTLY.
+
+## ABSOLUTE PROHIBITIONS - NEVER DO THESE
+
+### BANNED ACTIONS (Instant Failure):
+1. **Modifying package.json** - NEVER add/remove dependencies
+2. **Creating test files** - No __tests__, *.test.ts, *.spec.ts without permission
+3. **Touching .gitignore** - It's configured correctly
+4. **Editing tsconfig.json** - VS Code's is complex, don't break it
+5. **Adding comments "for clarity"** - If code needs comments, ask first
+6. **Reformatting code** - No prettier, no style changes
+7. **Renaming variables "for clarity"** - Even if names are bad
+8. **Git operations** - No commits, branches, or pushes
+
+## CRITICAL: Change Control Rules
+
+### NEVER MODIFY WITHOUT EXPLICIT PERMISSION:
+1. **Imports** - Don't add, remove, or "optimize" imports
+2. **Dependencies** - Don't suggest new packages
+3. **File structure** - Don't create new files unless asked
+4. **Working code** - If it works, DON'T TOUCH IT
+5. **Unrelated code** - Only modify EXACTLY what was requested
+
+### WHEN YOU ENCOUNTER ISSUES:
+
+```typescript
+// If compatibility issue:
+// ❌ DON'T: Automatically fix by changing dependencies
+// ✅ DO: "This requires VS Code API version X. Should I update it?"
+
+// If better approach exists:
+// ❌ DON'T: Implement the "better" way
+// ✅ DO: "I'll do X as requested. Note: Y might be more efficient. Proceed with X?"
+
+// If something might break:
+// ❌ DON'T: Add try-catch or error handling silently
+// ✅ DO: "This could throw an error. Should I add error handling?"
+```
+
+## Multi-File Edit Protection
+
+### WHEN EDITING MULTIPLE FILES:
+1. **List ALL files to be changed FIRST**
+   ```
+   "This change will affect:
+   - File A: lines 10-20 (add button)
+   - File B: lines 30-35 (import component)
+   - File C: lines 100-105 (register handler)
+
+   Proceed with ALL changes? (y/n)"
+   ```
+
+2. **NEVER cascade changes**
+   ```typescript
+   // ❌ DON'T: "I'll also update all files that import this"
+   // ✅ DO: "This change only affects the requested file"
+   ```
+
+3. **Show diffs for EACH file**
+   ```
+   File 1 of 3: [filename]
+   [show diff]
+   Continue to next file? (y/n)
+   ```
+
+## Context Window Management
+
+### WHEN CONTEXT IS FULL:
+```
+"⚠️ CONTEXT LIMIT APPROACHING
+I can see:
+- Current file: ✓
+- Imported files: ✓
+- Related files: ✗ (out of context)
+
+Should I proceed with partial context? (y/n)"
+```
+
+### NEVER:
+- Assume you remember previous conversations
+- Reference code you can't see
+- Make changes based on partial understanding
+
+### FORBIDDEN ACTIONS:
+1. **Creating APIs that don't exist**
+   ```typescript
+   // ❌ NEVER: import { AIService } from 'vscode';
+   // ✅ ALWAYS: Check if API exists first
+   ```
+
+2. **Adding "helpful" features**
+   ```typescript
+   // Asked: "Add a button"
+   // ❌ DON'T: Add button with tooltip, animation, and keyboard shortcut
+   // ✅ DO: Add just a button
+   ```
+
+3. **Optimizing working code**
+   ```typescript
+   // ❌ DON'T: "I also refactored this for better performance"
+   // ✅ DO: Complete only the requested task
+   ```
+
+## Scope Control
+
+### ONE TASK = ONE CHANGE:
+- User says "fix the chat" → Fix ONLY the chat
+- User says "add a button" → Add ONLY a button
+- User says "change color" → Change ONLY color
+
+### ASK BEFORE:
+- Adding error handling
+- Improving performance
+- Refactoring code
+- Adding TypeScript types
+- Updating dependencies
+- Creating new files
+
+## CmdShift Specific Rules
+
+### Project Structure:
+```
+ONLY modify files in:
+src/vs/workbench/contrib/cmdshift/
+
+NEVER create files in:
+- VS Code core directories
+- Root configuration files
+- Build system files
+```
+
+### When Working on Features:
+
+```typescript
+// AI Chat Implementation
+// ✅ DO: Use simple HTTP calls to OpenAI
+// ❌ DON'T: Create abstract LLM provider system
+
+// Database GUI
+// ✅ DO: Basic connection form
+// ❌ DON'T: Add connection pooling, caching, optimization
+
+// Deployment
+// ✅ DO: Simple Docker file generation
+// ❌ DON'T: Multi-stage builds, optimization, security scanning
+```
+
+## File Modification Rules
+
+### Before ANY edit:
+1. Show the exact lines being changed
+2. Explain what changes
+3. Wait for confirmation
+
+### Format:
+```
+CURRENT (lines 45-50):
+[existing code]
+
+PROPOSED CHANGE:
+[new code]
+
+REASON: [specific reason]
+Proceed? (y/n)
+```
+
+## Import Management
+
+### NEVER automatically:
+- Add new imports
+- Remove "unused" imports
+- Reorder imports
+- Optimize import paths
+
+### ALWAYS ask:
+```
+"This needs import X from Y. Should I add it?"
+```
+
+## Error Response Protocol
+
+### When something doesn't work:
+```
+ISSUE: [Exact error message]
+LOCATION: [File:line]
+POSSIBLE FIXES:
+1. [Option A] - Minimal change
+2. [Option B] - Different approach
+
+Which approach should I take?
+```
+
+### When APIs don't exist:
+```
+"VS Code doesn't have [API NAME].
+Options:
+1. Create our own implementation
+2. Use existing pattern from [VS Code feature]
+3. Skip this feature
+
+Your choice?"
+```
+
+## VS Code Specific Patterns
+
+### ALWAYS use existing patterns:
+- Look at VS Code's implementation first
+- Copy their service structure
+- Use their naming conventions
+- Follow their file organization
+
+### NEVER invent new patterns:
+- No custom dependency injection
+- No new service architectures
+- No clever abstractions
+- No performance optimizations
+
+## The 6-Week Sprint Rules
+
+### Week 1-2: Foundation
+- Fork and rebrand ONLY
+- Basic AI chat ONLY
+- No optimizations
+- No extras
+
+### Week 3-4: Core Features
+- Database GUI - basic ONLY
+- Backend runner - simple ONLY
+- No refactoring previous work
+
+### Week 5-6: Ship
+- Bug fixes ONLY
+- No new features
+- No rewrites
+- No optimizations
+
+## Response Templates
+
+### For feature requests:
+```
+"I'll implement [EXACT REQUEST].
+- Location: [where]
+- Changes: [what]
+- No additional features
+Proceed?"
+```
+
+### For improvements:
+```
+"You asked for [X].
+Note: [Y] would be better because [reason].
+Should I:
+1. Implement X as requested
+2. Implement Y instead
+?"
+```
+
+### For errors:
+```
+"Error at [location]: [message]
+This is because [reason].
+Fix options:
+1. [Minimal fix]
+2. [Alternative]
+Which one?"
+```
+
+## Final Override Rules
+
+1. **If it works, don't improve it**
+2. **If not asked, don't add it**
+3. **If unsure, ask first**
+4. **One change at a time**
+5. **Explicit > Implicit**
+
+## Task Completion Criteria
+
+### A task is COMPLETE when:
+1. The requested feature works
+2. No new errors introduced
+3. No extra features added
+4. No unrelated changes made
+
+### A task is NOT complete when:
+- "It works but could be better"
+- "I also noticed these issues"
+- "While testing I found"
+- "This would be more efficient if"
+
+### SUCCESS LOOKS LIKE:
+```
+"✓ Added button as requested
+✓ No other changes made
+✓ Existing functionality preserved
+
+Task complete. What's next?"
+```
+
+### NOT:
+```
+"✓ Added button
+✓ Also improved performance
+✓ Refactored related code
+✓ Added error handling
+✓ Updated documentation"
+```
+"Do exactly what's asked. Nothing more. Nothing less. Ask when unsure."
+
+## Compatibility Note:
+Working with VS Code version: [Specific version]
+TypeScript version: 5.0.0
+Node version: 18.x
+Electron version: 28.0.0
+
+DO NOT upgrade these without explicit permission.
+
+## When User Is Frustrated
+
+### IF USER SAYS:
+- "Just make it work" → Still ask for specifics
+- "Do whatever" → Still follow rules
+- "I don't care" → Still be precise
+- "Figure it out" → Still show options
+
+### RESPONSE TEMPLATE:
+```
+"I understand you want this working.
+Here's the minimal fix:
+[Specific change]
+This will [specific outcome].
+Proceed? (y/n)"
+```
+
+### NEVER INTERPRET FRUSTRATION AS:
+- Permission to break rules
+- License to add features
+- Authority to refactor
+- Approval to optimize
+
+---
+Remember: You're building a 6-week MVP, not a perfect IDE. Every unrequested change delays shipping.
+
+**Final word: These rules are NOT suggestions. They are LAW.**

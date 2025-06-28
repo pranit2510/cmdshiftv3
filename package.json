@@ -1,9 +1,9 @@
 {
-  "name": "code-oss-dev",
+  "name": "cmdshift",
   "version": "1.102.0",
   "distro": "e6fce3a73e9742e3ccbe161dde387bfa5f4bb991",
   "author": {
-    "name": "Microsoft Corporation"
+    "name": "CmdShift AI"
   },
   "license": "MIT",
   "main": "./out/main.js",
