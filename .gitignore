@@ -21,3 +21,13 @@ vscode.db
 product.overrides.json
 *.snap.actual
 .vscode-test
+
+# CmdShift specific
+*.log
+cmdshift-debug.log
+compile.log
+compile_output.log
+icons-temp/
+test-cmdshift.sh
+generate-icons.sh
+CMDSHIFT_ICON_REPLACEMENT_GUIDE.md

@@ -11,23 +11,22 @@ import { generateUuid } from '../../../../../base/common/uuid.js';
 import { IStorageService, StorageScope, StorageTarget } from '../../../../../platform/storage/common/storage.js';
 import { ILogService } from '../../../../../platform/log/common/log.js';
 
-const STORAGE_KEY_SESSIONS = 'cmdshift.aiChat.sessions';
-const STORAGE_KEY_ACTIVE_SESSION = 'cmdshift.aiChat.activeSession';
-
 export class AIChatService extends Disposable implements IAIChatService {
 	declare readonly _serviceBrand: undefined;
 
-	private sessions: Map<string, IChatSession> = new Map();
-	private activeSessionId: string | undefined;
+	// Events
+	private readonly _onDidChangeMessages = new Emitter<IChatSession>();
+	private readonly _onDidStartStreaming = new Emitter<string>();
+	private readonly _onDidEndStreaming = new Emitter<string>();
 
-	private readonly _onDidChangeMessages = this._register(new Emitter<IChatSession>());
 	readonly onDidChangeMessages: Event<IChatSession> = this._onDidChangeMessages.event;
-
-	private readonly _onDidStartStreaming = this._register(new Emitter<string>());
 	readonly onDidStartStreaming: Event<string> = this._onDidStartStreaming.event;
-
-	private readonly _onDidEndStreaming = this._register(new Emitter<string>());
 	readonly onDidEndStreaming: Event<string> = this._onDidEndStreaming.event;
+
+	// State
+	private sessions: IChatSession[] = [];
+	private activeSessionId: string | undefined;
+	private isInitialized = false;
 
 	constructor(
 		@IStorageService private readonly storageService: IStorageService,
@@ -37,164 +36,229 @@ export class AIChatService extends Disposable implements IAIChatService {
 	}
 
 	initialize(): void {
-		this.loadSessions();
-		if (this.sessions.size === 0) {
-			const session = this.createSession();
-			this.setActiveSession(session.id);
+		try {
+			if (this.isInitialized) {
+				return;
+			}
+
+			// Load sessions from storage
+			this.loadSessions();
+
+			// Create default session if none exist
+			if (this.sessions.length === 0) {
+				this.createSession();
+			}
+
+			this.isInitialized = true;
+			this.logService.info('[CmdShift] AI Chat Service initialized');
+		} catch (error) {
+			this.logService.error('[CmdShift] Error initializing AI Chat Service:', error);
 		}
 	}
 
 	createSession(): IChatSession {
-		const session: IChatSession = {
-			id: generateUuid(),
-			messages: [],
-			createdAt: Date.now(),
-			lastUpdated: Date.now()
-		};
-		this.sessions.set(session.id, session);
-		this.saveSessions();
-		return session;
+		try {
+			const session: IChatSession = {
+				id: generateUuid(),
+				messages: [],
+				createdAt: Date.now(),
+				lastUpdated: Date.now()
+			};
+
+			this.sessions.push(session);
+			this.activeSessionId = session.id;
+			this.saveSessions();
+
+			this.logService.info('[CmdShift] Created new chat session:', session.id);
+			return session;
+		} catch (error) {
+			this.logService.error('[CmdShift] Error creating session:', error);
+			// Return a fallback session to prevent crashes
+			const fallbackSession: IChatSession = {
+				id: 'fallback-' + Date.now(),
+				messages: [],
+				createdAt: Date.now(),
+				lastUpdated: Date.now()
+			};
+			return fallbackSession;
+		}
 	}
 
 	getActiveSession(): IChatSession | undefined {
-		console.log('[CmdShift] Getting active session, current ID:', this.activeSessionId);
-
-		if (!this.activeSessionId || !this.sessions.has(this.activeSessionId)) {
-			// Create a default session if none exists
-			console.log('[CmdShift] No active session, creating default');
-			this.activeSessionId = this.createSession().id;
+		try {
+			if (!this.activeSessionId) {
+				return this.sessions[0];
+			}
+			return this.sessions.find(s => s.id === this.activeSessionId) || this.sessions[0];
+		} catch (error) {
+			this.logService.error('[CmdShift] Error getting active session:', error);
+			return undefined;
 		}
-
-		const session = this.sessions.get(this.activeSessionId);
-		console.log('[CmdShift] Returning session:', session);
-		return session;
 	}
 
 	setActiveSession(sessionId: string): void {
-		if (this.sessions.has(sessionId)) {
-			this.activeSessionId = sessionId;
-			this.storageService.store(STORAGE_KEY_ACTIVE_SESSION, sessionId, StorageScope.WORKSPACE, StorageTarget.USER);
+		try {
+			const session = this.sessions.find(s => s.id === sessionId);
+			if (session) {
+				this.activeSessionId = sessionId;
+				this.logService.info('[CmdShift] Set active session:', sessionId);
+			}
+		} catch (error) {
+			this.logService.error('[CmdShift] Error setting active session:', error);
 		}
 	}
 
 	deleteSession(sessionId: string): void {
-		this.sessions.delete(sessionId);
-		if (this.activeSessionId === sessionId) {
-			this.activeSessionId = undefined;
-			// Create a new session if no sessions left
-			if (this.sessions.size === 0) {
-				const session = this.createSession();
-				this.setActiveSession(session.id);
-			} else {
-				// Set the first available session as active
-				this.activeSessionId = this.sessions.keys().next().value;
+		try {
+			const index = this.sessions.findIndex(s => s.id === sessionId);
+			if (index !== -1) {
+				this.sessions.splice(index, 1);
+
+				// If deleted session was active, set new active session
+				if (this.activeSessionId === sessionId) {
+					this.activeSessionId = this.sessions.length > 0 ? this.sessions[0].id : undefined;
+				}
+
+				// Create new session if no sessions remain
+				if (this.sessions.length === 0) {
+					this.createSession();
+				}
+
+				this.saveSessions();
+				this.logService.info('[CmdShift] Deleted session:', sessionId);
 			}
+		} catch (error) {
+			this.logService.error('[CmdShift] Error deleting session:', error);
 		}
-		this.saveSessions();
 	}
 
 	getAllSessions(): IChatSession[] {
-		return Array.from(this.sessions.values());
+		try {
+			return [...this.sessions]; // Return copy to prevent external modifications
+		} catch (error) {
+			this.logService.error('[CmdShift] Error getting all sessions:', error);
+			return [];
+		}
 	}
 
-	async sendMessage(message: string, fileContext?: URI): Promise<void> {
-		console.log('[CmdShift] Sending message:', message);
+	async sendMessage(content: string, fileContext?: URI): Promise<void> {
+		try {
+			if (!content.trim()) {
+				return;
+			}
 
-		const session = this.getActiveSession();
-		if (!session) {
-			console.error('[CmdShift] No active session!');
-			return;
-		}
+			const session = this.getActiveSession();
+			if (!session) {
+				this.logService.warn('[CmdShift] No active session for sending message');
+				return;
+			}
 
-		const userMessage: IChatMessage = {
-			id: `msg_${Date.now()}_user`,  // Ensure ID exists
-			role: 'user',
-			content: message,
-			timestamp: Date.now(),
-			fileContext
-		};
+			// Add user message
+			const userMessage: IChatMessage = {
+				id: generateUuid(),
+				role: 'user',
+				content: content.trim(),
+				timestamp: Date.now(),
+				fileContext
+			};
 
-		session.messages.push(userMessage);
-		this._onDidChangeMessages.fire(session);
+			session.messages.push(userMessage);
+			session.lastUpdated = Date.now();
 
-		// Simulate AI response
-		setTimeout(() => {
-			const aiMessage: IChatMessage = {
-				id: `msg_${Date.now()}_ai`,  // Ensure ID exists
+			// Notify listeners
+			this._onDidChangeMessages.fire(session);
+
+			// Add AI response (simplified for now)
+			const responseMessage: IChatMessage = {
+				id: generateUuid(),
 				role: 'assistant',
-				content: `Echo: ${message}`,
+				content: 'I received your message: "' + content + '". AI chat functionality is coming soon!',
 				timestamp: Date.now(),
 				isStreaming: false
 			};
 
-			session.messages.push(aiMessage);
-			this._onDidChangeMessages.fire(session);
-		}, 1000);
+			// Simulate slight delay for AI response
+			setTimeout(() => {
+				try {
+					session.messages.push(responseMessage);
+					session.lastUpdated = Date.now();
+					this.saveSessions();
+					this._onDidChangeMessages.fire(session);
+				} catch (error) {
+					this.logService.error('[CmdShift] Error adding AI response:', error);
+				}
+			}, 500);
+
+			this.saveSessions();
+			this.logService.info('[CmdShift] Sent message to AI Chat');
+
+		} catch (error) {
+			this.logService.error('[CmdShift] Error sending message:', error);
+		}
 	}
 
 	cancelStreaming(messageId: string): void {
-		const session = this.getActiveSession();
-		if (!session) return;
-
-		const message = session.messages.find(m => m.id === messageId);
-		if (message && message.isStreaming) {
-			message.isStreaming = false;
-			message.content += '\n\n[Response cancelled]';
+		try {
+			// Implementation for canceling streaming responses
 			this._onDidEndStreaming.fire(messageId);
-			this._onDidChangeMessages.fire(session);
-			this.saveSessions();
+			this.logService.info('[CmdShift] Canceled streaming for message:', messageId);
+		} catch (error) {
+			this.logService.error('[CmdShift] Error canceling streaming:', error);
 		}
 	}
 
 	clearMessages(sessionId?: string): void {
-		const id = sessionId || this.activeSessionId;
-		if (!id) return;
+		try {
+			const targetSessionId = sessionId || this.activeSessionId;
+			const session = this.sessions.find(s => s.id === targetSessionId);
 
-		const session = this.sessions.get(id);
-		if (session) {
-			session.messages = [];
-			session.lastUpdated = Date.now();
-			this._onDidChangeMessages.fire(session);
-			this.saveSessions();
+			if (session) {
+				session.messages = [];
+				session.lastUpdated = Date.now();
+				this.saveSessions();
+				this._onDidChangeMessages.fire(session);
+				this.logService.info('[CmdShift] Cleared messages for session:', targetSessionId);
+			}
+		} catch (error) {
+			this.logService.error('[CmdShift] Error clearing messages:', error);
 		}
 	}
 
 	private loadSessions(): void {
 		try {
-			const storedSessions = this.storageService.get(STORAGE_KEY_SESSIONS, StorageScope.WORKSPACE);
-			if (storedSessions) {
-				const sessionsArray: IChatSession[] = JSON.parse(storedSessions);
-				this.sessions.clear();
-				for (const session of sessionsArray) {
-					this.sessions.set(session.id, session);
-				}
-			}
-
-			const activeSession = this.storageService.get(STORAGE_KEY_ACTIVE_SESSION, StorageScope.WORKSPACE);
-			if (activeSession && this.sessions.has(activeSession)) {
-				this.activeSessionId = activeSession;
+			const sessionsData = this.storageService.get('cmdshift.aiChat.sessions', StorageScope.PROFILE);
+			if (sessionsData) {
+				const parsed = JSON.parse(sessionsData);
+				this.sessions = Array.isArray(parsed.sessions) ? parsed.sessions : [];
+				this.activeSessionId = parsed.activeSessionId;
 			}
 		} catch (error) {
-			this.logService.error('Failed to load AI chat sessions', error);
+			this.logService.warn('[CmdShift] Error loading sessions from storage, starting fresh:', error);
+			this.sessions = [];
+			this.activeSessionId = undefined;
 		}
 	}
 
 	private saveSessions(): void {
 		try {
-			const sessionsArray = Array.from(this.sessions.values());
-			this.storageService.store(
-				STORAGE_KEY_SESSIONS,
-				JSON.stringify(sessionsArray),
-				StorageScope.WORKSPACE,
-				StorageTarget.USER
-			);
+			const data = {
+				sessions: this.sessions,
+				activeSessionId: this.activeSessionId
+			};
+			this.storageService.store('cmdshift.aiChat.sessions', JSON.stringify(data), StorageScope.PROFILE, StorageTarget.USER);
 		} catch (error) {
-			this.logService.error('Failed to save AI chat sessions', error);
+			this.logService.error('[CmdShift] Error saving sessions to storage:', error);
 		}
 	}
 
 	override dispose(): void {
-		this.saveSessions();
-		super.dispose();
+		try {
+			this._onDidChangeMessages.dispose();
+			this._onDidStartStreaming.dispose();
+			this._onDidEndStreaming.dispose();
+			super.dispose();
+		} catch (error) {
+			this.logService.error('[CmdShift] Error disposing AI Chat Service:', error);
+		}
 	}
 }

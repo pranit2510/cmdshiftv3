@@ -22,10 +22,11 @@ import { localize } from '../../../../../nls.js';
 
 export class AIChatViewPane extends ViewPane {
 	static readonly ID = 'cmdshift.aiChatView';
-	static readonly TITLE = localize('aiChat', "AI Chat");
+	static readonly TITLE = localize('commandMe', "Command me");
 
 	private webview: IWebviewElement | undefined;
 	private readonly disposables = new DisposableStore();
+	private isWebviewInitialized = false;
 
 	constructor(
 		options: IViewPaneOptions,
@@ -42,397 +43,324 @@ export class AIChatViewPane extends ViewPane {
 		@IWebviewService private readonly webviewService: IWebviewService,
 		@IEditorService private readonly editorService: IEditorService
 	) {
-		// Ensure options has required id property
+		// Ensure options has required id property with error handling
 		const viewOptions: IViewPaneOptions = options || { id: AIChatViewPane.ID, title: AIChatViewPane.TITLE };
 		const safeOptions: IViewPaneOptions = {
 			...viewOptions,
 			id: viewOptions.id || AIChatViewPane.ID,
 			title: viewOptions.title || AIChatViewPane.TITLE
 		};
+
+		// Super call must be at root level
 		super(safeOptions, keybindingService, contextMenuService, configurationService, contextKeyService, viewDescriptorService, instantiationService, openerService, themeService, hoverService);
+
+		// Additional initialization with error handling
+		try {
+			console.log('[CmdShift] AIChatViewPane constructor completed');
+		} catch (error) {
+			console.error('[CmdShift] Error in AIChatViewPane constructor:', error);
+		}
 	}
 
 	protected override renderBody(container: HTMLElement): void {
-		super.renderBody(container);
+		try {
+			super.renderBody(container);
 
-		const webviewContainer = append(container, $('.ai-chat-webview-container'));
+			// Only create webview once
+			if (!this.isWebviewInitialized) {
+				const webviewContainer = append(container, $('.ai-chat-webview-container'));
 
-		this.webview = this.webviewService.createWebviewElement({
-			title: 'CmdShift AI Chat',
-			options: {
-				enableFindWidget: false
-			},
-			contentOptions: {
-				allowScripts: true,
-			},
-			extension: undefined,
-			origin: AIChatViewPane.ID
-		});
+				this.webview = this.webviewService.createWebviewElement({
+					title: 'Command me',
+					options: {
+						enableFindWidget: false,
+						retainContextWhenHidden: true
+					},
+					contentOptions: {
+						allowScripts: true,
+					},
+					extension: undefined,
+					origin: AIChatViewPane.ID
+				});
 
-		this.webview.setHtml(this.getWebviewContent());
+				this.webview.setHtml(this.getWebviewContent());
 
-		// Mount webview to container
-		const targetWindow = getWindow(this.element);
-		this.webview.mountTo(webviewContainer, targetWindow);
+				// Mount webview to container
+				const targetWindow = getWindow(this.element);
+				this.webview.mountTo(webviewContainer, targetWindow);
 
-		// Handle webview messages
-		this.disposables.add(this.webview.onMessage((e: any) => {
-			switch (e.type) {
-				case 'ready':
-					this.updateWebview();
-					break;
-				case 'sendMessage':
-					this.handleSendMessage(e.message);
-					break;
+				// Handle webview messages
+				this.disposables.add(this.webview.onMessage((e: any) => {
+					try {
+						switch (e.type) {
+							case 'ready':
+								this.updateWebview();
+								this.updateFileContext();
+								break;
+							case 'sendMessage':
+								this.handleSendMessage(e.message);
+								break;
+							case 'viewAllChats':
+								console.log('[CmdShift] View all chats clicked');
+								break;
+						}
+					} catch (error) {
+						console.error('[CmdShift] Error handling webview message:', error);
+					}
+				}));
+
+				// Listen to AI Chat service events
+				this.disposables.add(this.aiChatService.onDidChangeMessages(() => {
+					try {
+						this.updateWebview();
+					} catch (error) {
+						console.error('[CmdShift] Error updating webview on message change:', error);
+					}
+				}));
+
+				// Listen to editor changes
+				this.disposables.add(this.editorService.onDidActiveEditorChange(() => {
+					try {
+						this.updateFileContext();
+					} catch (error) {
+						console.error('[CmdShift] Error updating file context:', error);
+					}
+				}));
+
+				this.isWebviewInitialized = true;
 			}
-		}));
 
-		// Listen to AI Chat service events
-		this.disposables.add(this.aiChatService.onDidChangeMessages(() => this.updateWebview()));
-
-		// Listen to editor changes
-		this.disposables.add(this.editorService.onDidActiveEditorChange(() => this.updateFileContext()));
+			// Always update on render to ensure fresh state
+			this.updateWebview();
+			this.updateFileContext();
+		} catch (error) {
+			console.error('[CmdShift] Error in renderBody:', error);
+		}
 	}
 
 	protected override layoutBody(height: number, width: number): void {
-		super.layoutBody(height, width);
-		// Webview will automatically resize with its container
+		try {
+			super.layoutBody(height, width);
+			// Webview will automatically resize with its container
+		} catch (error) {
+			console.error('[CmdShift] Error in layoutBody:', error);
+		}
 	}
 
 	private async handleSendMessage(message: string): Promise<void> {
-		const activeEditor = this.editorService.activeEditor;
-		const fileUri = activeEditor?.resource;
-		await this.aiChatService.sendMessage(message, fileUri);
+		try {
+			const activeEditor = this.editorService.activeEditor;
+			const fileUri = activeEditor?.resource;
+			await this.aiChatService.sendMessage(message, fileUri);
+		} catch (error) {
+			console.error('[CmdShift] Error sending message:', error);
+		}
 	}
 
 	private updateWebview(): void {
-		if (!this.webview) {
-			return;
+		try {
+			if (!this.webview) {
+				return;
+			}
+
+			const session = this.aiChatService.getActiveSession();
+			const messages = session?.messages || [];
+			const allSessions = this.aiChatService.getAllSessions();
+
+			this.webview.postMessage({
+				type: 'updateMessages',
+				messages: messages.map((m: any) => ({
+					id: m?.id || Date.now().toString(),
+					role: m?.role || 'user',
+					content: m?.content || '',
+					timestamp: m?.timestamp || Date.now(),
+					isStreaming: m?.isStreaming || false
+				})),
+				sessions: allSessions.map(s => ({
+					id: s.id,
+					title: s.messages.length > 0 ? s.messages[0].content.substring(0, 30) + '...' : 'New Chat',
+					timestamp: s.lastUpdated
+				}))
+			});
+		} catch (error) {
+			console.error('[CmdShift] Error updating webview:', error);
 		}
-
-		const session = this.aiChatService.getActiveSession();
-		const messages = session?.messages || [];
-
-		// Add logging to debug
-		console.log('[CmdShift] Session:', session);
-		console.log('[CmdShift] Messages:', messages);
-
-		this.webview.postMessage({
-			type: 'updateMessages',
-			messages: messages.map((m: any) => ({
-				id: m?.id || Date.now().toString(),  // Add fallback
-				role: m?.role || 'user',
-				content: m?.content || '',
-				timestamp: m?.timestamp || Date.now(),
-				isStreaming: m?.isStreaming || false
-			}))
-		});
 	}
 
 	private updateFileContext(): void {
-		if (!this.webview) {
-			return;
+		try {
+			if (!this.webview) {
+				return;
+			}
+
+			const activeEditor = this.editorService.activeEditor;
+			const fileName = activeEditor?.resource?.fsPath || 'No file active';
+
+			this.webview.postMessage({
+				type: 'updateFileContext',
+				fileName
+			});
+		} catch (error) {
+			console.error('[CmdShift] Error updating file context:', error);
 		}
-
-		const activeEditor = this.editorService.activeEditor;
-		const fileName = activeEditor?.resource?.fsPath || 'No file active';
-
-		this.webview.postMessage({
-			type: 'updateFileContext',
-			fileName
-		});
 	}
 
 	private getWebviewContent(): string {
+		// Simplified HTML to reduce potential syntax errors
 		return `<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>CmdShift AI Chat</title>
+	<title>Command me</title>
 	<style>
 		body {
 			margin: 0;
-			padding: 0;
-			font-family: var(--vscode-font-family);
-			font-size: var(--vscode-font-size);
+			padding: 16px;
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
 			color: var(--vscode-foreground);
-			background-color: var(--vscode-editor-background);
-			overflow: hidden;
+			background-color: var(--vscode-sideBar-background);
 		}
 
-		#chat-container {
+		.container {
 			display: flex;
 			flex-direction: column;
-			height: 100vh;
+			height: calc(100vh - 32px);
 		}
 
-		#file-context {
-			padding: 8px 16px;
-			background-color: var(--vscode-sideBar-background);
+		.header {
+			margin-bottom: 16px;
+			padding-bottom: 8px;
 			border-bottom: 1px solid var(--vscode-panel-border);
-			font-size: 12px;
-			color: var(--vscode-descriptionForeground);
 		}
 
-		#messages {
+		.messages {
 			flex: 1;
 			overflow-y: auto;
-			padding: 16px;
+			margin-bottom: 16px;
 		}
 
 		.message {
-			margin-bottom: 16px;
-			padding: 12px;
-			border-radius: 6px;
-			background-color: var(--vscode-editor-inactiveSelectionBackground);
-		}
-
-		.message.user {
-			background-color: var(--vscode-editor-selectionBackground);
-			margin-left: 20%;
-		}
-
-		.message.assistant {
-			margin-right: 20%;
-		}
-
-		.message-role {
-			font-weight: bold;
-			margin-bottom: 8px;
-			color: var(--vscode-textLink-foreground);
-		}
-
-		.message-content {
-			line-height: 1.5;
-		}
-
-		.message-content code {
-			background-color: var(--vscode-textCodeBlock-background);
-			padding: 2px 4px;
-			border-radius: 3px;
-			font-family: var(--vscode-editor-font-family);
-		}
-
-		.message-content pre {
-			background-color: var(--vscode-textCodeBlock-background);
-			padding: 12px;
+			margin-bottom: 12px;
+			padding: 8px;
 			border-radius: 4px;
-			overflow-x: auto;
-			margin: 8px 0;
+		}
+
+		.user-message {
+			background-color: var(--vscode-button-background);
+			color: var(--vscode-button-foreground);
+		}
+
+		.ai-message {
+			background-color: var(--vscode-editor-background);
 			border: 1px solid var(--vscode-panel-border);
 		}
 
-		.message-content pre.code-block {
-			position: relative;
-		}
-
-		.message-content pre.code-block::before {
-			content: attr(data-language);
-			position: absolute;
-			top: 0;
-			right: 0;
-			padding: 4px 8px;
-			font-size: 12px;
-			color: var(--vscode-descriptionForeground);
-			background-color: var(--vscode-badge-background);
-			border-bottom-left-radius: 4px;
-		}
-
-		#input-container {
-			padding: 16px;
-			border-top: 1px solid var(--vscode-panel-border);
+		.input-container {
 			display: flex;
 			gap: 8px;
 		}
 
-		#message-input {
+		.input {
 			flex: 1;
-			padding: 8px 12px;
+			padding: 8px;
+			border: 1px solid var(--vscode-input-border);
 			background-color: var(--vscode-input-background);
 			color: var(--vscode-input-foreground);
-			border: 1px solid var(--vscode-input-border);
 			border-radius: 4px;
-			font-family: var(--vscode-font-family);
-			font-size: var(--vscode-font-size);
-			resize: none;
-			min-height: 36px;
-			max-height: 120px;
 		}
 
-		#message-input:focus {
-			outline: 1px solid var(--vscode-focusBorder);
-			border-color: var(--vscode-focusBorder);
-		}
-
-		#send-button {
+		.send-button {
 			padding: 8px 16px;
 			background-color: var(--vscode-button-background);
 			color: var(--vscode-button-foreground);
 			border: none;
 			border-radius: 4px;
 			cursor: pointer;
-			font-family: var(--vscode-font-family);
-			font-size: var(--vscode-font-size);
-			white-space: nowrap;
 		}
 
-		#send-button:hover {
+		.send-button:hover {
 			background-color: var(--vscode-button-hoverBackground);
-		}
-
-		#send-button:disabled {
-			opacity: 0.6;
-			cursor: not-allowed;
-		}
-
-		.streaming-indicator {
-			display: inline-block;
-			margin-left: 8px;
-		}
-
-		.streaming-indicator::after {
-			content: '...';
-			animation: dots 1.5s steps(4, end) infinite;
-		}
-
-		@keyframes dots {
-			0%, 20% { content: ''; }
-			40% { content: '.'; }
-			60% { content: '..'; }
-			80%, 100% { content: '...'; }
 		}
 	</style>
 </head>
 <body>
-	<div id="chat-container">
-		<div id="file-context">
-			<span>Context: </span><span id="file-path"></span>
+	<div class="container">
+		<div class="header">
+			<h3>Command me</h3>
+			<div id="fileContext">No file active</div>
 		</div>
-		<div id="messages"></div>
-		<div id="input-container">
-			<textarea id="message-input" placeholder="Ask CmdShift AI..." rows="1"></textarea>
-			<button id="send-button">Send</button>
+
+		<div class="messages" id="messages">
+			<div class="message ai-message">
+				Welcome to Command me! Ask me anything about your code.
+			</div>
+		</div>
+
+		<div class="input-container">
+			<input type="text" class="input" id="messageInput" placeholder="Ask me anything..." />
+			<button class="send-button" id="sendButton">Send</button>
 		</div>
 	</div>
 
 	<script>
 		const vscode = acquireVsCodeApi();
-		const messagesContainer = document.getElementById('messages');
-		const messageInput = document.getElementById('message-input');
-		const sendButton = document.getElementById('send-button');
-		const fileContext = document.getElementById('file-context');
-		const filePath = document.getElementById('file-path');
 
-		let messages = [];
+		document.getElementById('sendButton').addEventListener('click', sendMessage);
+		document.getElementById('messageInput').addEventListener('keypress', function(e) {
+			if (e.key === 'Enter') {
+				sendMessage();
+			}
+		});
 
-		// Handle messages from extension
+		function sendMessage() {
+			const input = document.getElementById('messageInput');
+			const message = input.value.trim();
+			if (message) {
+				vscode.postMessage({
+					type: 'sendMessage',
+					message: message
+				});
+				input.value = '';
+			}
+		}
+
 		window.addEventListener('message', event => {
 			const message = event.data;
 			switch (message.type) {
 				case 'updateMessages':
-					messages = message.messages;
-					renderMessages();
+					updateMessages(message.messages);
 					break;
 				case 'updateFileContext':
-					filePath.textContent = message.fileName;
+					updateFileContext(message.fileName);
 					break;
 			}
 		});
 
-		// Send message
-		function sendMessage() {
-			const messageInput = document.getElementById('message-input');
-			const content = messageInput.value.trim();
+		function updateMessages(messages) {
+			const container = document.getElementById('messages');
+			container.innerHTML = '';
 
-			if (!content) return;
-
-			console.log('[CmdShift Webview] Sending message:', content);
-
-			vscode.postMessage({
-				type: 'sendMessage',
-				message: content,
-				fileContext: filePath.textContent
-			});
-
-			messageInput.value = '';
-			adjustTextareaHeight();
-		}
-
-		// Render messages
-		function renderMessages() {
-			messagesContainer.innerHTML = '';
-			messages.forEach(msg => {
-				const messageEl = document.createElement('div');
-				messageEl.className = 'message ' + msg.role;
-
-				const roleEl = document.createElement('div');
-				roleEl.className = 'message-role';
-				roleEl.textContent = msg.role === 'user' ? 'You' : 'CmdShift AI';
-
-				const contentEl = document.createElement('div');
-				contentEl.className = 'message-content';
-				contentEl.innerHTML = formatContent(msg.content);
-
-				if (msg.isStreaming) {
-					const indicator = document.createElement('span');
-					indicator.className = 'streaming-indicator';
-					contentEl.appendChild(indicator);
-				}
-
-				messageEl.appendChild(roleEl);
-				messageEl.appendChild(contentEl);
-				messagesContainer.appendChild(messageEl);
-			});
-
-			messagesContainer.scrollTop = messagesContainer.scrollHeight;
-		}
-
-		// Format message content with code blocks and syntax highlighting
-		function formatContent(content) {
-			// Handle code blocks with language detection
-			content = content.replace(/\`\`\`(\w+)?\n([\s\S]*?)\`\`\`/g, function(match, lang, code) {
-				const language = lang || 'plaintext';
-				const escapedCode = escapeHtml(code.trim());
-				return '<pre class="code-block" data-language="' + language + '"><code>' + escapedCode + '</code></pre>';
-			});
-
-			// Handle inline code
-			content = content.replace(/\`([^\`]+)\`/g, '<code>$1</code>');
-
-			// Handle line breaks
-			content = content.replace(/\n/g, '<br>');
-
-			return content;
-		}
-
-		// Escape HTML to prevent XSS
-		function escapeHtml(str) {
-			return str
-				.replace(/&/g, '&amp;')
-				.replace(/</g, '&lt;')
-				.replace(/>/g, '&gt;')
-				.replace(/"/g, '&quot;')
-				.replace(/'/g, '&#039;');
-		}
-
-		// Auto-resize textarea
-		function adjustTextareaHeight() {
-			messageInput.style.height = 'auto';
-			messageInput.style.height = Math.min(messageInput.scrollHeight, 120) + 'px';
-		}
-
-		// Event listeners
-		sendButton.addEventListener('click', sendMessage);
-		messageInput.addEventListener('keydown', (e) => {
-			if (e.key === 'Enter' && !e.shiftKey) {
-				e.preventDefault();
-				sendMessage();
+			if (messages.length === 0) {
+				container.innerHTML = '<div class="message ai-message">Welcome to Command me! Ask me anything about your code.</div>';
+				return;
 			}
-		});
-		messageInput.addEventListener('input', adjustTextareaHeight);
 
-		// Notify extension that webview is ready
+			messages.forEach(msg => {
+				const div = document.createElement('div');
+				div.className = 'message ' + (msg.role === 'user' ? 'user-message' : 'ai-message');
+				div.textContent = msg.content;
+				container.appendChild(div);
+			});
+
+			container.scrollTop = container.scrollHeight;
+		}
+
+		function updateFileContext(fileName) {
+			document.getElementById('fileContext').textContent = fileName;
+		}
+
+		// Notify ready
 		vscode.postMessage({ type: 'ready' });
 	</script>
 </body>
@@ -440,8 +368,11 @@ export class AIChatViewPane extends ViewPane {
 	}
 
 	override dispose(): void {
-		this.disposables.dispose();
-		this.webview?.dispose();
-		super.dispose();
+		try {
+			this.disposables.dispose();
+			super.dispose();
+		} catch (error) {
+			console.error('[CmdShift] Error disposing AIChatViewPane:', error);
+		}
 	}
 }

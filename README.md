@@ -1,138 +1,188 @@
-# CmdShift - AI First IDE
+# CmdShift - AI-Powered Full-Stack IDE
 
 [![Feature Requests](https://img.shields.io/github/issues/pranit2510/cmdshiftv3/feature-request.svg)](https://github.com/pranit2510/cmdshiftv3/issues?q=is%3Aopen+is%3Aissue+label%3Afeature-request+sort%3Areactions-%2B1-desc)
 [![Bugs](https://img.shields.io/github/issues/pranit2510/cmdshiftv3/bug.svg)](https://github.com/pranit2510/cmdshiftv3/issues?utf8=✓&q=is%3Aissue+is%3Aopen+label%3Abug)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.txt)
 
-## The Repository
+CmdShift is an AI-native IDE that handles full-stack development from code to deployment. Built on the proven VS Code foundation, CmdShift integrates artificial intelligence into every aspect of the development workflow, from writing code to managing databases and deploying applications.
 
-This repository is where we develop **CmdShift**, the world's first truly AI-native IDE. Built on the solid foundation of VS Code, CmdShift reimagines the development experience by putting artificial intelligence at the center of every workflow. Not only do we build cutting-edge AI features, we also publish our [roadmap](https://github.com/pranit2510/cmdshiftv3/wiki/Roadmap) and development plans. This source code is available under the standard [MIT license](https://github.com/pranit2510/cmdshiftv3/blob/main/LICENSE.txt).
+## 🚀 Features
 
-## CmdShift - AI First IDE
+- **🤖 AI Chat Assistant (Command me)** - Intelligent coding companion with context-aware assistance
+- **🚀 One-click deployment** - Deploy your applications instantly to cloud platforms
+- **🗄️ Integrated database management** - Visual database tools and AI-powered queries
+- **🔄 Automated workflows** - CI/CD pipelines and automated testing
+- **⚡ Lightning Fast** - Built on the battle-tested VS Code engine
+- **🎯 Context-Aware AI** - AI that understands your entire codebase
+- **🌐 Universal Support** - Works with every programming language and framework
+- **📦 Full Extension Compatibility** - Supports all VS Code extensions
 
-<p align="center">
-  <img alt="CmdShift in action" src="https://user-images.githubusercontent.com/35271042/118224532-3842c400-b438-11eb-923d-a5f66fa6785a.png">
-</p>
+## 🎯 AI-First Development
 
-**CmdShift** is the AI-first IDE that revolutionizes how developers write, debug, and ship code. Built on the proven VS Code foundation, CmdShift integrates advanced AI capabilities directly into every aspect of the development workflow.
+Transform your development workflow with AI integration:
 
-## Key Features
+- **Smart Code Generation** - Generate code from natural language descriptions
+- **Intelligent Debugging** - AI-powered error detection and resolution
+- **Automated Testing** - Generate and run tests with AI assistance
+- **Code Review & Optimization** - Automated code quality analysis
+- **Documentation Generation** - Auto-generate documentation and comments
 
-🤖 **Native AI Integration** - Built-in AI chat, code generation, and intelligent assistance
-⚡ **Lightning Fast** - Powered by the battle-tested VS Code engine
-🎯 **Context-Aware** - AI that understands your entire codebase
-🔧 **Developer-Centric** - Designed by developers, for developers
-🌐 **Universal** - Works with every programming language and framework
-📦 **Extensible** - Full VS Code extension compatibility
+## 🗄️ Database Management
 
-CmdShift transforms the traditional edit-build-debug cycle into an AI-augmented workflow where:
-- AI suggests code as you type
-- Intelligent debugging helps you fix issues faster
-- Automated testing and optimization recommendations
-- Smart refactoring and code review assistance
+Built-in database tools for modern development:
 
-## Download CmdShift
+- **Visual Database Designer** - Create and modify database schemas visually
+- **AI-Powered Queries** - Generate SQL queries using natural language
+- **Multiple Database Support** - PostgreSQL, MySQL, MongoDB, and more
+- **Real-time Data Visualization** - Interactive charts and data exploration
+- **Migration Management** - Version control for your database changes
 
-CmdShift is available for Windows, macOS, and Linux. Download the latest version from our [releases page](https://github.com/pranit2510/cmdshiftv3/releases).
+## 🚀 Deployment & DevOps
 
-## Getting Started
+Streamlined deployment workflows:
+
+- **One-Click Deployment** - Deploy to AWS, Azure, Google Cloud, and more
+- **Container Support** - Docker integration with automated containerization
+- **CI/CD Pipelines** - Built-in continuous integration and deployment
+- **Environment Management** - Manage dev, staging, and production environments
+- **Infrastructure as Code** - Generate and manage infrastructure configurations
+
+## 📥 Installation
+
+### Download Pre-built Binaries
+
+Download the latest version for your platform:
+
+- **Windows**: [Download .exe](https://github.com/pranit2510/cmdshiftv3/releases)
+- **macOS**: [Download .dmg](https://github.com/pranit2510/cmdshiftv3/releases)
+- **Linux**: [Download .deb/.rpm](https://github.com/pranit2510/cmdshiftv3/releases)
+
+### Package Managers
+
+```bash
+# Using Homebrew (macOS)
+brew install cmdshift
+
+# Using Chocolatey (Windows)
+choco install cmdshift
+
+# Using Snap (Linux)
+sudo snap install cmdshift
+```
+
+## 🔨 Building from Source
+
+### Prerequisites
+
+- **Node.js** 18.x or higher
+- **Python** 3.8+ (for native dependencies)
+- **Git**
+- **4 GB RAM minimum** (8 GB recommended)
+
+### Build Steps
+
+```bash
+# Clone the repository
+git clone https://github.com/pranit2510/cmdshiftv3.git
+cd cmdshiftv3
+
+# Install dependencies
+npm install
+
+# Compile the source code
+npm run compile
+
+# Run CmdShift
+./scripts/code.sh
+```
+
+### Development Mode
+
+```bash
+# Watch for changes and auto-compile
+npm run watch
+
+# Run in development mode
+./scripts/cmdshift-dev.sh
+```
+
+## 🚀 Getting Started
 
 1. **Install CmdShift** - Download and install for your platform
 2. **Open Your Project** - CmdShift works with any codebase
-3. **Activate AI Features** - Use `Cmd+Shift+I` to access AI chat
-4. **Start Coding** - Experience AI-first development
+3. **Activate AI Chat** - Use `Cmd+Shift+I` (or `Ctrl+Shift+I`) to access the AI assistant
+4. **Connect Your Database** - Use the integrated database tools to connect to your data
+5. **Deploy Your App** - Use one-click deployment to ship your application
 
-## AI Features
+## 📚 Documentation
 
-### 🎯 AI Chat Integration
-- Real-time coding assistance
-- Natural language code generation
-- Context-aware suggestions
-- Debugging help and explanations
+- **[User Guide](https://github.com/pranit2510/cmdshiftv3/wiki/User-Guide)** - Complete user documentation
+- **[AI Features](https://github.com/pranit2510/cmdshiftv3/wiki/AI-Features)** - AI capabilities and usage
+- **[Database Tools](https://github.com/pranit2510/cmdshiftv3/wiki/Database-Tools)** - Database management guide
+- **[Deployment Guide](https://github.com/pranit2510/cmdshiftv3/wiki/Deployment)** - Deployment and DevOps features
+- **[API Reference](https://github.com/pranit2510/cmdshiftv3/wiki/API)** - Extension development
 
-### 🔍 Intelligent Code Analysis
-- Automatic code quality analysis
-- Performance optimization suggestions
-- Security vulnerability detection
-- Code documentation generation
+## 🤝 Contributing
 
-### 🚀 Smart Workflows
-- AI-powered project setup
-- Automated testing strategies
-- Deployment optimization
-- Code review assistance
+We welcome contributions to CmdShift! Here's how you can help:
 
-## Contributing
+- **[Report Issues](https://github.com/pranit2510/cmdshiftv3/issues)** - Bug reports and feature requests
+- **[Submit Pull Requests](https://github.com/pranit2510/cmdshiftv3/pulls)** - Code contributions
+- **[Join Discussions](https://github.com/pranit2510/cmdshiftv3/discussions)** - Community discussions
+- **Improve Documentation** - Help us make better docs
+- **Share Use Cases** - Show us how you use CmdShift
 
-We welcome contributions to CmdShift! There are many ways to get involved:
+See our [Contributing Guide](CONTRIBUTING.md) for detailed information about:
+- Development setup and workflow
+- Coding standards and best practices
+- Pull request process
+- Issue reporting guidelines
 
-* [Submit bugs and feature requests](https://github.com/pranit2510/cmdshiftv3/issues)
-* Review [source code changes](https://github.com/pranit2510/cmdshiftv3/pulls)
-* Help improve documentation
-* Share your AI workflow ideas
+## 🌟 Community & Support
 
-If you're interested in contributing code, please see our [Contributing Guide](CONTRIBUTING.md) which covers:
+- **💬 [GitHub Discussions](https://github.com/pranit2510/cmdshiftv3/discussions)** - Community discussions and Q&A
+- **🐛 [Issue Tracker](https://github.com/pranit2510/cmdshiftv3/issues)** - Bug reports and feature requests
+- **📖 [Wiki](https://github.com/pranit2510/cmdshiftv3/wiki)** - Comprehensive documentation
+- **🎮 [Examples](https://github.com/pranit2510/cmdshiftv3/tree/main/examples)** - Sample projects and tutorials
 
-* How to build and run from source
-* Development workflow and debugging
-* Coding guidelines and best practices
-* Submitting pull requests
-* Finding issues to work on
+## 🗺️ Roadmap
 
-## Community & Support
+### 🎯 Current Focus (v1.x)
+- ✅ AI Chat Integration
+- ✅ Database Management Tools
+- 🔄 One-Click Deployment
+- 🔄 Enhanced AI Code Generation
 
-* 💬 [GitHub Discussions](https://github.com/pranit2510/cmdshiftv3/discussions) - Community discussions
-* 🐛 [Report Issues](https://github.com/pranit2510/cmdshiftv3/issues) - Bug reports and feature requests
-* 📖 [Documentation](https://github.com/pranit2510/cmdshiftv3/wiki) - Comprehensive guides and tutorials
-* 🎮 [Examples](https://github.com/pranit2510/cmdshiftv3/tree/main/examples) - Sample projects and use cases
+### 🚀 Coming Soon (v2.x)
+- 🔮 Multi-modal AI (voice, vision)
+- 🔮 Advanced DevOps Automation
+- 🔮 Collaborative AI Features
+- 🔮 Cloud IDE Support
 
-## Related Projects
+### 🌟 Future Vision (v3.x+)
+- 🔮 AI-Powered Project Architecture
+- 🔮 Intelligent Performance Optimization
+- 🔮 Advanced Security Analysis
+- 🔮 Multi-Cloud Management
 
-CmdShift leverages and extends many open-source projects:
-
-* Built on the VS Code OSS foundation
-* AI models and integrations
-* Language servers and extensions
-* Developer tooling ecosystem
-
-For a complete list, visit our [Related Projects](https://github.com/pranit2510/cmdshiftv3/wiki/Related-Projects) page.
-
-## Built-in Extensions
-
-CmdShift includes enhanced versions of VS Code's built-in extensions, plus AI-specific additions located in the [extensions](extensions) folder. These include:
-
-* **AI Language Features** - Enhanced language support with AI assistance
-* **Smart Completions** - Context-aware code completion
-* **Intelligent Snippets** - AI-generated code snippets
-* **Automated Documentation** - Auto-generated comments and docs
-
-## Development Container
-
-This repository includes development container support for consistent development environments:
-
-* **VS Code Dev Containers** - Use the **Dev Containers: Clone Repository in Container Volume...** command
-* **GitHub Codespaces** - Install the [GitHub Codespaces](https://marketplace.visualstudio.com/items?itemName=GitHub.codespaces) extension
-
-Requirements: **4 Cores and 6 GB of RAM (8 GB recommended)** for full development builds.
-
-## Roadmap
-
-🎯 **Current Focus: Core AI Integration**
-- Enhanced AI chat capabilities
-- Real-time code analysis
-- Smart debugging assistance
-
-🚀 **Coming Soon:**
-- Multi-modal AI support (voice, vision)
-- Advanced project understanding
-- AI-powered testing automation
-- Collaborative AI features
-
-## License
+## 📄 License
 
 Copyright (c) CmdShift AI. All rights reserved.
 
-Licensed under the [MIT](LICENSE.txt) license.
+Licensed under the [MIT License](LICENSE.txt). See LICENSE.txt for details.
+
+## 🙏 Acknowledgments
+
+CmdShift is built on the foundation of many open-source projects:
+
+- **[VS Code OSS](https://github.com/microsoft/vscode)** - The core editor platform
+- **[Monaco Editor](https://microsoft.github.io/monaco-editor/)** - Code editing engine
+- **[Electron](https://electronjs.org/)** - Cross-platform desktop framework
+- **[TypeScript](https://www.typescriptlang.org/)** - Type-safe development
+- And many other amazing open-source libraries and tools
 
 ---
 
-**CmdShift** - *Where AI meets development. The future of coding is here.*
+**CmdShift** - *Where AI meets full-stack development. Build, deploy, and manage with intelligence.*
+
+[![Built with ❤️ by CmdShift AI](https://img.shields.io/badge/Built%20with%20❤️%20by-CmdShift%20AI-blue)](https://github.com/pranit2510/cmdshiftv3)

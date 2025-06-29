@@ -18,9 +18,10 @@ import { StatusBarItemsExtensionPoint } from './statusBarExtensionPoint.js';
 import './mainThreadLocalization.js';
 import './mainThreadBulkEdits.js';
 import './mainThreadLanguageModels.js';
-import './mainThreadChatAgents2.js';
-import './mainThreadChatCodeMapper.js';
-import './mainThreadLanguageModelTools.js';
+// Chat-related imports disabled for CmdShift (conflicts with custom AI chat)
+// import './mainThreadChatAgents2.js';
+// import './mainThreadChatCodeMapper.js';
+// import './mainThreadLanguageModelTools.js';
 import './mainThreadEmbeddings.js';
 import './mainThreadCodeInsets.js';
 import './mainThreadCLICommands.js';
@@ -90,7 +91,7 @@ import './mainThreadAiRelatedInformation.js';
 import './mainThreadAiEmbeddingVector.js';
 import './mainThreadAiSettingsSearch.js';
 import './mainThreadMcp.js';
-import './mainThreadChatStatus.js';
+// import './mainThreadChatStatus.js'; // Disabled for CmdShift
 
 export class ExtensionPoints implements IWorkbenchContribution {
 
