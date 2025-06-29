@@ -342,8 +342,12 @@ export class AIChatViewPane extends ViewPane {
 
 		// Send message
 		function sendMessage() {
+			const messageInput = document.getElementById('message-input');
 			const content = messageInput.value.trim();
+
 			if (!content) return;
+
+			console.log('[CmdShift Webview] Sending message:', content);
 
 			vscode.postMessage({
 				type: 'sendMessage',
@@ -387,10 +391,10 @@ export class AIChatViewPane extends ViewPane {
 		// Format message content with code blocks and syntax highlighting
 		function formatContent(content) {
 			// Handle code blocks with language detection
-			content = content.replace(/\`\`\`(\w+)?\n([\s\S]*?)\`\`\`/g, (match, lang, code) => {
+			content = content.replace(/\`\`\`(\w+)?\n([\s\S]*?)\`\`\`/g, function(match, lang, code) {
 				const language = lang || 'plaintext';
 				const escapedCode = escapeHtml(code.trim());
-				return \`<pre class="code-block" data-language="\${language}"><code>\${escapedCode}</code></pre>\`;
+				return '<pre class="code-block" data-language="' + language + '"><code>' + escapedCode + '</code></pre>';
 			});
 
 			// Handle inline code
