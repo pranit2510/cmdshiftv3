@@ -208,6 +208,9 @@ import './contrib/chat/browser/chat.contribution.js';
 import './contrib/inlineChat/browser/inlineChat.contribution.js';
 import './contrib/mcp/browser/mcp.contribution.js';
 
+// CmdShift AI
+import './contrib/cmdshift/ai/browser/ai.contribution.js';
+
 // Interactive
 import './contrib/interactive/browser/interactive.contribution.js';
 

@@ -51,7 +51,7 @@ npm run precommit
 npm run eslint
 
 # StyleLint for CSS/SCSS
-npm run stylelint  
+npm run stylelint
 
 # Comprehensive hygiene checks
 npm run hygiene
@@ -163,3 +163,17 @@ Use VS Code launch configurations in `.vscode/launch.json`:
 - Many features support both desktop and web deployment
 - Respect the layering - don't import workbench code into platform or base layers
 - All user-visible strings must be externalized for localization
+
+# CMDSHIFT AI IDE
+
+This is CmdShift AI, a fork of VS Code with integrated AI capabilities for full-stack development.
+
+## CmdShift-Specific Features
+- AI Chat Panel: `src/vs/workbench/contrib/cmdshift/ai/`
+- Database GUI: `src/vs/workbench/contrib/cmdshift/database/`
+- Deployment Tools: `src/vs/workbench/contrib/cmdshift/deployment/`
+- Automation Builder: `src/vs/workbench/contrib/cmdshift/automation/`
+
+## Quick Launch
+```bash
+./scripts/cmdshift-dev.sh  # Launches CmdShift in development mode
