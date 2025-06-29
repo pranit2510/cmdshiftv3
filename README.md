@@ -1,79 +1,138 @@
-# Visual Studio Code - Open Source ("Code - OSS")
+# CmdShift - AI First IDE
 
-[![Feature Requests](https://img.shields.io/github/issues/microsoft/vscode/feature-request.svg)](https://github.com/microsoft/vscode/issues?q=is%3Aopen+is%3Aissue+label%3Afeature-request+sort%3Areactions-%2B1-desc)
-[![Bugs](https://img.shields.io/github/issues/microsoft/vscode/bug.svg)](https://github.com/microsoft/vscode/issues?utf8=✓&q=is%3Aissue+is%3Aopen+label%3Abug)
-[![Gitter](https://img.shields.io/badge/chat-on%20gitter-yellow.svg)](https://gitter.im/Microsoft/vscode)
+[![Feature Requests](https://img.shields.io/github/issues/pranit2510/cmdshiftv3/feature-request.svg)](https://github.com/pranit2510/cmdshiftv3/issues?q=is%3Aopen+is%3Aissue+label%3Afeature-request+sort%3Areactions-%2B1-desc)
+[![Bugs](https://img.shields.io/github/issues/pranit2510/cmdshiftv3/bug.svg)](https://github.com/pranit2510/cmdshiftv3/issues?utf8=✓&q=is%3Aissue+is%3Aopen+label%3Abug)
 
 ## The Repository
 
-This repository ("`Code - OSS`") is where we (Microsoft) develop the [Visual Studio Code](https://code.visualstudio.com) product together with the community. Not only do we work on code and issues here, we also publish our [roadmap](https://github.com/microsoft/vscode/wiki/Roadmap), [monthly iteration plans](https://github.com/microsoft/vscode/wiki/Iteration-Plans), and our [endgame plans](https://github.com/microsoft/vscode/wiki/Running-the-Endgame). This source code is available to everyone under the standard [MIT license](https://github.com/microsoft/vscode/blob/main/LICENSE.txt).
+This repository is where we develop **CmdShift**, the world's first truly AI-native IDE. Built on the solid foundation of VS Code, CmdShift reimagines the development experience by putting artificial intelligence at the center of every workflow. Not only do we build cutting-edge AI features, we also publish our [roadmap](https://github.com/pranit2510/cmdshiftv3/wiki/Roadmap) and development plans. This source code is available under the standard [MIT license](https://github.com/pranit2510/cmdshiftv3/blob/main/LICENSE.txt).
 
-## Visual Studio Code
+## CmdShift - AI First IDE
 
 <p align="center">
-  <img alt="VS Code in action" src="https://user-images.githubusercontent.com/35271042/118224532-3842c400-b438-11eb-923d-a5f66fa6785a.png">
+  <img alt="CmdShift in action" src="https://user-images.githubusercontent.com/35271042/118224532-3842c400-b438-11eb-923d-a5f66fa6785a.png">
 </p>
 
-[Visual Studio Code](https://code.visualstudio.com) is a distribution of the `Code - OSS` repository with Microsoft-specific customizations released under a traditional [Microsoft product license](https://code.visualstudio.com/License/).
+**CmdShift** is the AI-first IDE that revolutionizes how developers write, debug, and ship code. Built on the proven VS Code foundation, CmdShift integrates advanced AI capabilities directly into every aspect of the development workflow.
 
-[Visual Studio Code](https://code.visualstudio.com) combines the simplicity of a code editor with what developers need for their core edit-build-debug cycle. It provides comprehensive code editing, navigation, and understanding support along with lightweight debugging, a rich extensibility model, and lightweight integration with existing tools.
+## Key Features
 
-Visual Studio Code is updated monthly with new features and bug fixes. You can download it for Windows, macOS, and Linux on [Visual Studio Code's website](https://code.visualstudio.com/Download). To get the latest releases every day, install the [Insiders build](https://code.visualstudio.com/insiders).
+🤖 **Native AI Integration** - Built-in AI chat, code generation, and intelligent assistance
+⚡ **Lightning Fast** - Powered by the battle-tested VS Code engine
+🎯 **Context-Aware** - AI that understands your entire codebase
+🔧 **Developer-Centric** - Designed by developers, for developers
+🌐 **Universal** - Works with every programming language and framework
+📦 **Extensible** - Full VS Code extension compatibility
+
+CmdShift transforms the traditional edit-build-debug cycle into an AI-augmented workflow where:
+- AI suggests code as you type
+- Intelligent debugging helps you fix issues faster
+- Automated testing and optimization recommendations
+- Smart refactoring and code review assistance
+
+## Download CmdShift
+
+CmdShift is available for Windows, macOS, and Linux. Download the latest version from our [releases page](https://github.com/pranit2510/cmdshiftv3/releases).
+
+## Getting Started
+
+1. **Install CmdShift** - Download and install for your platform
+2. **Open Your Project** - CmdShift works with any codebase
+3. **Activate AI Features** - Use `Cmd+Shift+I` to access AI chat
+4. **Start Coding** - Experience AI-first development
+
+## AI Features
+
+### 🎯 AI Chat Integration
+- Real-time coding assistance
+- Natural language code generation
+- Context-aware suggestions
+- Debugging help and explanations
+
+### 🔍 Intelligent Code Analysis
+- Automatic code quality analysis
+- Performance optimization suggestions
+- Security vulnerability detection
+- Code documentation generation
+
+### 🚀 Smart Workflows
+- AI-powered project setup
+- Automated testing strategies
+- Deployment optimization
+- Code review assistance
 
 ## Contributing
 
-There are many ways in which you can participate in this project, for example:
+We welcome contributions to CmdShift! There are many ways to get involved:
 
-* [Submit bugs and feature requests](https://github.com/microsoft/vscode/issues), and help us verify as they are checked in
-* Review [source code changes](https://github.com/microsoft/vscode/pulls)
-* Review the [documentation](https://github.com/microsoft/vscode-docs) and make pull requests for anything from typos to additional and new content
+* [Submit bugs and feature requests](https://github.com/pranit2510/cmdshiftv3/issues)
+* Review [source code changes](https://github.com/pranit2510/cmdshiftv3/pulls)
+* Help improve documentation
+* Share your AI workflow ideas
 
-If you are interested in fixing issues and contributing directly to the code base,
-please see the document [How to Contribute](https://github.com/microsoft/vscode/wiki/How-to-Contribute), which covers the following:
+If you're interested in contributing code, please see our [Contributing Guide](CONTRIBUTING.md) which covers:
 
-* [How to build and run from source](https://github.com/microsoft/vscode/wiki/How-to-Contribute)
-* [The development workflow, including debugging and running tests](https://github.com/microsoft/vscode/wiki/How-to-Contribute#debugging)
-* [Coding guidelines](https://github.com/microsoft/vscode/wiki/Coding-Guidelines)
-* [Submitting pull requests](https://github.com/microsoft/vscode/wiki/How-to-Contribute#pull-requests)
-* [Finding an issue to work on](https://github.com/microsoft/vscode/wiki/How-to-Contribute#where-to-contribute)
-* [Contributing to translations](https://aka.ms/vscodeloc)
+* How to build and run from source
+* Development workflow and debugging
+* Coding guidelines and best practices
+* Submitting pull requests
+* Finding issues to work on
 
-## Feedback
+## Community & Support
 
-* Ask a question on [Stack Overflow](https://stackoverflow.com/questions/tagged/vscode)
-* [Request a new feature](CONTRIBUTING.md)
-* Upvote [popular feature requests](https://github.com/microsoft/vscode/issues?q=is%3Aopen+is%3Aissue+label%3Afeature-request+sort%3Areactions-%2B1-desc)
-* [File an issue](https://github.com/microsoft/vscode/issues)
-* Connect with the extension author community on [GitHub Discussions](https://github.com/microsoft/vscode-discussions/discussions) or [Slack](https://aka.ms/vscode-dev-community)
-* Follow [@code](https://twitter.com/code) and let us know what you think!
-
-See our [wiki](https://github.com/microsoft/vscode/wiki/Feedback-Channels) for a description of each of these channels and information on some other available community-driven channels.
+* 💬 [GitHub Discussions](https://github.com/pranit2510/cmdshiftv3/discussions) - Community discussions
+* 🐛 [Report Issues](https://github.com/pranit2510/cmdshiftv3/issues) - Bug reports and feature requests
+* 📖 [Documentation](https://github.com/pranit2510/cmdshiftv3/wiki) - Comprehensive guides and tutorials
+* 🎮 [Examples](https://github.com/pranit2510/cmdshiftv3/tree/main/examples) - Sample projects and use cases
 
 ## Related Projects
 
-Many of the core components and extensions to VS Code live in their own repositories on GitHub. For example, the [node debug adapter](https://github.com/microsoft/vscode-node-debug) and the [mono debug adapter](https://github.com/microsoft/vscode-mono-debug) repositories are separate from each other. For a complete list, please visit the [Related Projects](https://github.com/microsoft/vscode/wiki/Related-Projects) page on our [wiki](https://github.com/microsoft/vscode/wiki).
+CmdShift leverages and extends many open-source projects:
 
-## Bundled Extensions
+* Built on the VS Code OSS foundation
+* AI models and integrations
+* Language servers and extensions
+* Developer tooling ecosystem
 
-VS Code includes a set of built-in extensions located in the [extensions](extensions) folder, including grammars and snippets for many languages. Extensions that provide rich language support (code completion, Go to Definition) for a language have the suffix `language-features`. For example, the `json` extension provides coloring for `JSON` and the `json-language-features` extension provides rich language support for `JSON`.
+For a complete list, visit our [Related Projects](https://github.com/pranit2510/cmdshiftv3/wiki/Related-Projects) page.
+
+## Built-in Extensions
+
+CmdShift includes enhanced versions of VS Code's built-in extensions, plus AI-specific additions located in the [extensions](extensions) folder. These include:
+
+* **AI Language Features** - Enhanced language support with AI assistance
+* **Smart Completions** - Context-aware code completion
+* **Intelligent Snippets** - AI-generated code snippets
+* **Automated Documentation** - Auto-generated comments and docs
 
 ## Development Container
 
-This repository includes a Visual Studio Code Dev Containers / GitHub Codespaces development container.
+This repository includes development container support for consistent development environments:
 
-* For [Dev Containers](https://aka.ms/vscode-remote/download/containers), use the **Dev Containers: Clone Repository in Container Volume...** command which creates a Docker volume for better disk I/O on macOS and Windows.
-  * If you already have VS Code and Docker installed, you can also click [here](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/microsoft/vscode) to get started. This will cause VS Code to automatically install the Dev Containers extension if needed, clone the source code into a container volume, and spin up a dev container for use.
+* **VS Code Dev Containers** - Use the **Dev Containers: Clone Repository in Container Volume...** command
+* **GitHub Codespaces** - Install the [GitHub Codespaces](https://marketplace.visualstudio.com/items?itemName=GitHub.codespaces) extension
 
-* For Codespaces, install the [GitHub Codespaces](https://marketplace.visualstudio.com/items?itemName=GitHub.codespaces) extension in VS Code, and use the **Codespaces: Create New Codespace** command.
+Requirements: **4 Cores and 6 GB of RAM (8 GB recommended)** for full development builds.
 
-Docker / the Codespace should have at least **4 Cores and 6 GB of RAM (8 GB recommended)** to run full build. See the [development container README](.devcontainer/README.md) for more information.
+## Roadmap
 
-## Code of Conduct
+🎯 **Current Focus: Core AI Integration**
+- Enhanced AI chat capabilities
+- Real-time code analysis
+- Smart debugging assistance
 
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+🚀 **Coming Soon:**
+- Multi-modal AI support (voice, vision)
+- Advanced project understanding
+- AI-powered testing automation
+- Collaborative AI features
 
 ## License
 
-Copyright (c) Microsoft Corporation. All rights reserved.
+Copyright (c) CmdShift AI. All rights reserved.
 
 Licensed under the [MIT](LICENSE.txt) license.
+
+---
+
+**CmdShift** - *Where AI meets development. The future of coding is here.*
